@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import SignUp from '../components/SignUp'
+import styled from 'styled-components';
+import SignUp from '../components/SignUp/SignUp';
 
 const AuthContainer = styled.div`
   width: 100vw;
@@ -8,14 +8,14 @@ const AuthContainer = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #202225;
-`
+`;
 
 function Auth() {
   return (
     <AuthContainer>
       <SignUp />
     </AuthContainer>
-  )
+  );
 }
 
-export default Auth
+export default Auth;

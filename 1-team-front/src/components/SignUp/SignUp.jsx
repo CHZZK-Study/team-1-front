@@ -63,7 +63,6 @@ function SignUp() {
     return check.test(value);
   };
   const validatePasswordConfirm = (value) => {
-    console.log(password);
     return value === password.password;
   };
   const validateNickName = (value) => {
