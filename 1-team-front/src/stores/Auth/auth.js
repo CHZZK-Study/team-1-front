@@ -2,12 +2,13 @@ import { create } from 'zustand';
 
 const useAuthStore = create((set) => ({
   isLogIn: false,
-  setIsLogIn: (isLogIn) => set({ isLogIn: !isLogIn.isLogIn }),
+  setIsLogIn: (isLogIn) => set({ isLogIn }),
   isSignUp: true,
-  setIsSignUp: (isSignUp) => set({ isSignUp: !isSignUp.isSignUp }),
+  setIsSignUp: (isSignUp) => set({ isSignUp }),
   isEmailAuth: false,
-  setIsEmailAuth: (isEmailAuth) =>
-    set({ isEmailAuth: !isEmailAuth.isEmailAuth }),
+  setIsEmailAuth: (isEmailAuth) => set({ isEmailAuth }),
+  authForm: { email: '', password: '', nickname: '' },
+  setAuthForm: (authForm) => set(authForm),
 }));
 
 export default useAuthStore;
