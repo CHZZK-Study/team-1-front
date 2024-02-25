@@ -2,6 +2,10 @@
 
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useMutation } from 'react-query';
+
+import useAuthStore from '../../stores/Auth/auth';
+import createRandomNickName from '../../utils/createRandomNickName';
 
 const SignUpForm = styled.form`
   padding: 40px 30px;
@@ -30,6 +34,9 @@ const InputBox = styled.div`
   & label {
     font-size: 0.8rem;
     font-weight: 800;
+    & span {
+      color: #ed4245;
+    }
   }
   & input {
     width: 95%;
@@ -48,6 +55,8 @@ const InputBox = styled.div`
 `;
 
 function SignUp() {
+  const { setIsSignUp, setIsEmailAuth, setAuthForm } = useAuthStore();
+
   const [email, setEmail] = useState({ email: '', isWarn: false });
   const [password, setPassword] = useState({ password: '', isWarn: false });
   const [passwordConfirm, setPasswordConfirm] = useState({
@@ -55,6 +64,34 @@ function SignUp() {
     isWarn: false,
   });
   const [nickName, setNickName] = useState({ nickName: '', isWarn: false });
+  const [isEmailDuplicated, setIsEmailDuplicated] = useState(false);
+
+  const fetchEmailAuth = async (data) => {
+    const url = 'http://localhost:8080/signup/email-check';
+    const payload = data;
+    axios.post(url, payload);
+  };
+
+  const { mutate } = useMutation(fetchEmailAuth, {
+    onSuccess: (data) => {
+      setAuthForm({
+        email: email.email,
+        password: password.password,
+        nickName:
+          nickName.nickName.length > 0
+            ? nickName.nickName
+            : createRandomNickName(),
+      });
+      setIsSignUp(false);
+      setIsEmailAuth(true);
+    },
+    onError: (error) => {
+      setEmail((prev) => {
+        return { ...prev, isWarn: true };
+      });
+      setIsEmailDuplicated(true);
+    },
+  });
 
   const validateEmail = (value) => value.includes('@');
   const validatePassword = (value) => {
@@ -69,18 +106,27 @@ function SignUp() {
     return value.length !== 0;
   };
 
+  const submitHandler = (event) => {
+    event.preventDefault();
+    mutate({ email: email.email });
+  };
+
   const blurHandler = (id, value, setFn, validationFn) => {
     if (validationFn(value)) return setFn({ [id]: value, isWarn: false });
+    if (id === 'email') setIsEmailDuplicated(false);
     setFn((prev) => {
       return { ...prev, isWarn: true };
     });
   };
 
   return (
-    <SignUpForm>
+    <SignUpForm onSubmit={submitHandler}>
       <h2>계정 만들기</h2>
       <InputBox>
-        <label>이메일</label>
+        <label>
+          이메일
+          <span> *</span>
+        </label>
         <input
           id="email"
           type="text"
@@ -93,10 +139,19 @@ function SignUp() {
             )
           }
         />
-        {email.isWarn && <p>이메일을 입력해 주세요.</p>}
+        {email.isWarn && (
+          <p>
+            {isEmailDuplicated
+              ? '이미 가입된 이메일 입니다.'
+              : '이메일을 입력해 주세요.'}
+          </p>
+        )}
       </InputBox>
       <InputBox>
-        <label>비밀번호</label>
+        <label>
+          비밀번호
+          <span> *</span>
+        </label>
         <input
           id="password"
           type="password"
@@ -114,7 +169,10 @@ function SignUp() {
         )}
       </InputBox>
       <InputBox>
-        <label>비밀번호 확인</label>
+        <label>
+          비밀번호 확인
+          <span> *</span>
+        </label>
         <input
           id="passwordConfirm"
           type="password"
