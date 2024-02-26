@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import formatTime from '../../utils/formatTime';
 
 const buttonType = {
   cancel: css`
@@ -80,12 +81,42 @@ const NoticeBox = styled.div`
   }
 `;
 
+const TimerBox = styled.div`
+  display: flex;
+  margin: -5px 0;
+  ${(props) =>
+    props.isTimeOver
+      ? css`
+          & span {
+            color: #00aff4;
+            font-weight: 600;
+            cursor: pointer;
+          }
+          & span:hover {
+            text-decoration: underline;
+          }
+        `
+      : null}
+`;
+
 const EmailAuth = () => {
   const [isTyped, setIsTyped] = useState(false);
+  const [counter, setCounter] = useState(180);
+  const [isTimeOver, setIsTimeOver] = useState(false);
+
   const changeHandler = (event) => {
     if (event.target.value.length > 0) return setIsTyped(true);
     setIsTyped(false);
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (counter > 0) return setCounter((prev) => (prev -= 1));
+      setIsTimeOver(true);
+      clearInterval(timer);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [counter]);
 
   return (
     <EmailAuthForm>
@@ -98,8 +129,11 @@ const EmailAuth = () => {
       </NoticeBox>
       <InputBox>
         <input type="text" onChange={changeHandler}></input>
-        <p>인증코드가 잘못 됐어요.</p>
+        {/* <p>인증코드가 잘못 됐어요.</p> */}
       </InputBox>
+      <TimerBox isTimeOver={isTimeOver}>
+        <span>{isTimeOver ? '다시 전송하기' : formatTime(counter)}</span>
+      </TimerBox>
       <EmailAuthButton type={isTyped ? 'confirm' : 'cancel'}>
         {isTyped ? '완료' : '취소'}
       </EmailAuthButton>
