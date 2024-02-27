@@ -1,7 +1,9 @@
 /* eslint-disable */
 import { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 import styled, { css } from 'styled-components';
 import formatTime from '../../utils/formatTime';
+import useAuthStore from '../../stores/Auth/auth';
 
 const buttonType = {
   cancel: css`
@@ -100,13 +102,28 @@ const TimerBox = styled.div`
 `;
 
 const EmailAuth = () => {
+  const { authForm } = useAuthStore();
   const [isTyped, setIsTyped] = useState(false);
   const [counter, setCounter] = useState(180);
   const [isTimeOver, setIsTimeOver] = useState(false);
 
+  const fetchEmailAuth = async (data) => {
+    const url = 'http://localhost:8080/signup/email-check';
+    const payload = data;
+    axios.post(url, payload);
+  };
+
+  const { mutate } = useMutation(fetchEmailAuth);
+
   const changeHandler = (event) => {
     if (event.target.value.length > 0) return setIsTyped(true);
     setIsTyped(false);
+  };
+
+  const clickHandler = () => {
+    setIsTimeOver(false);
+    setCounter(180);
+    mutate(authForm.email);
   };
 
   useEffect(() => {
@@ -132,7 +149,13 @@ const EmailAuth = () => {
         {/* <p>인증코드가 잘못 됐어요.</p> */}
       </InputBox>
       <TimerBox isTimeOver={isTimeOver}>
-        <span>{isTimeOver ? '다시 전송하기' : formatTime(counter)}</span>
+        <span>
+          {isTimeOver ? (
+            <span onClick={clickHandler}>다시 전송하기</span>
+          ) : (
+            <span>{formatTime(counter)}</span>
+          )}
+        </span>
       </TimerBox>
       <EmailAuthButton type={isTyped ? 'confirm' : 'cancel'}>
         {isTyped ? '완료' : '취소'}
