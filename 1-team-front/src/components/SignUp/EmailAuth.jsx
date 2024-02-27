@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import styled, { css } from 'styled-components';
+import axios from 'axios';
 import formatTime from '../../utils/formatTime';
 import useAuthStore from '../../stores/Auth/auth';
 
@@ -103,27 +104,47 @@ const TimerBox = styled.div`
 
 const EmailAuth = () => {
   const { authForm } = useAuthStore();
+  const [code, setCode] = useState('');
   const [isTyped, setIsTyped] = useState(false);
   const [counter, setCounter] = useState(180);
   const [isTimeOver, setIsTimeOver] = useState(false);
+  const [isWrongCode, setIsWrongCode] = useState(false);
 
   const fetchEmailAuth = async (data) => {
     const url = 'http://localhost:8080/signup/email-check';
     const payload = data;
-    axios.post(url, payload);
+    await axios.post(url, payload);
+  };
+  const fetchCheckAuthCode = async (data) => {
+    const url = 'http://localhost:8080/signup/email-auth-code';
+    const payload = data;
+    await axios.post(url, payload);
   };
 
-  const { mutate } = useMutation(fetchEmailAuth);
+  const emailPost = useMutation(fetchEmailAuth);
+  const authCodePost = useMutation(fetchCheckAuthCode, {
+    onError: (error) => {
+      console.log('error', error);
+      setIsWrongCode(true);
+    },
+  });
 
   const changeHandler = (event) => {
     if (event.target.value.length > 0) return setIsTyped(true);
     setIsTyped(false);
+    setCode(event.target.value);
   };
 
   const clickHandler = () => {
+    emailPost.mutate({ email: authForm.email });
     setIsTimeOver(false);
+    setIsWrongCode(false);
     setCounter(180);
-    mutate(authForm.email);
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    authCodePost.mutate({ email: authForm.email, authentication_code: code });
   };
 
   useEffect(() => {
@@ -136,17 +157,18 @@ const EmailAuth = () => {
   }, [counter]);
 
   return (
-    <EmailAuthForm>
+    <EmailAuthForm onSubmit={submitHandler}>
       <h2>회원가입을 위해 확인 코드를 입력해 주세요.</h2>
       <NoticeBox>
         <p>회원가입시 사용한 이메일로 확인코드를 전송했어요.</p>
         <p>
-          코드를 받지 못하셨나요? <span>코드 재전송</span>
+          코드를 받지 못하셨나요?{' '}
+          <span onClick={clickHandler}>코드 재전송</span>
         </p>
       </NoticeBox>
       <InputBox>
         <input type="text" onChange={changeHandler}></input>
-        {/* <p>인증코드가 잘못 됐어요.</p> */}
+        {isWrongCode && <p>인증코드가 잘못 됐어요.</p>}
       </InputBox>
       <TimerBox isTimeOver={isTimeOver}>
         <span>
