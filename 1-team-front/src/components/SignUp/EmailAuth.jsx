@@ -103,7 +103,7 @@ const TimerBox = styled.div`
 `;
 
 const EmailAuth = () => {
-  const { authForm } = useAuthStore();
+  const { authForm, setIsEmailAuth, setIsSignUp } = useAuthStore();
   const [code, setCode] = useState('');
   const [isTyped, setIsTyped] = useState(false);
   const [counter, setCounter] = useState(180);
@@ -124,7 +124,6 @@ const EmailAuth = () => {
   const emailPost = useMutation(fetchEmailAuth);
   const authCodePost = useMutation(fetchCheckAuthCode, {
     onError: (error) => {
-      console.log('error', error);
       setIsWrongCode(true);
     },
   });
@@ -140,6 +139,12 @@ const EmailAuth = () => {
     setIsTimeOver(false);
     setIsWrongCode(false);
     setCounter(180);
+  };
+
+  const clickButtonHandler = (event) => {
+    event.preventDefault();
+    setIsEmailAuth(false);
+    setIsSignUp(true);
   };
 
   const submitHandler = (event) => {
@@ -162,7 +167,7 @@ const EmailAuth = () => {
       <NoticeBox>
         <p>회원가입시 사용한 이메일로 확인코드를 전송했어요.</p>
         <p>
-          코드를 받지 못하셨나요?{' '}
+          코드를 받지 못하셨나요?
           <span onClick={clickHandler}>코드 재전송</span>
         </p>
       </NoticeBox>
@@ -179,7 +184,10 @@ const EmailAuth = () => {
           )}
         </span>
       </TimerBox>
-      <EmailAuthButton type={isTyped ? 'confirm' : 'cancel'}>
+      <EmailAuthButton
+        onClick={isTyped ? null : clickButtonHandler}
+        type={isTyped ? 'confirm' : 'cancel'}
+      >
         {isTyped ? '완료' : '취소'}
       </EmailAuthButton>
     </EmailAuthForm>
