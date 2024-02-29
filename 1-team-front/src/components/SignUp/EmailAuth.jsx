@@ -103,7 +103,8 @@ const TimerBox = styled.div`
 `;
 
 const EmailAuth = () => {
-  const { authForm, setIsEmailAuth, setIsSignUp } = useAuthStore();
+  const { authForm, setIsEmailAuth, setIsSignUp, setIsEmailConfirm } =
+    useAuthStore();
   const [code, setCode] = useState('');
   const [isTyped, setIsTyped] = useState(false);
   const [counter, setCounter] = useState(180);
@@ -125,6 +126,10 @@ const EmailAuth = () => {
   const authCodePost = useMutation(fetchCheckAuthCode, {
     onError: (error) => {
       setIsWrongCode(true);
+    },
+    onSuccess: () => {
+      setIsEmailConfirm(true);
+      setIsEmailAuth(false);
     },
   });
 
