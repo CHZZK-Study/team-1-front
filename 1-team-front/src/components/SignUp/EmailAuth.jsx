@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import axios from 'axios';
 import formatTime from '../../utils/formatTime';
 import useAuthStore from '../../stores/Auth/auth';
+import { useNavigate } from 'react-router-dom';
 
 const buttonType = {
   cancel: css`
@@ -103,8 +104,9 @@ const TimerBox = styled.div`
 `;
 
 const EmailAuth = () => {
-  const { authForm, setIsEmailAuth, setIsSignUp, setIsEmailConfirm } =
-    useAuthStore();
+  const { authForm } = useAuthStore();
+  const navigate = useNavigate();
+
   const [code, setCode] = useState('');
   const [isTyped, setIsTyped] = useState(false);
   const [counter, setCounter] = useState(180);
@@ -128,8 +130,7 @@ const EmailAuth = () => {
       setIsWrongCode(true);
     },
     onSuccess: () => {
-      setIsEmailConfirm(true);
-      setIsEmailAuth(false);
+      navigate('/auth/email-certified');
     },
   });
 
@@ -148,8 +149,7 @@ const EmailAuth = () => {
 
   const clickButtonHandler = (event) => {
     event.preventDefault();
-    setIsEmailAuth(false);
-    setIsSignUp(true);
+    navigate('/auth/signup');
   };
 
   const submitHandler = (event) => {

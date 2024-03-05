@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import useAuthStore from '../../stores/Auth/auth';
 import createRandomNickName from '../../utils/createRandomNickName';
@@ -56,6 +58,7 @@ const InputBox = styled.div`
 
 function SignUp() {
   const { setIsSignUp, setIsEmailAuth, setAuthForm } = useAuthStore();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState({ email: '', isWarn: false });
   const [password, setPassword] = useState({ password: '', isWarn: false });
@@ -69,7 +72,7 @@ function SignUp() {
   const fetchEmailAuth = async (data) => {
     const url = 'http://localhost:8080/signup/email-check';
     const payload = data;
-    axios.post(url, payload);
+    return await axios.post(url, payload);
   };
 
   const { mutate } = useMutation(fetchEmailAuth, {
@@ -82,8 +85,7 @@ function SignUp() {
             ? nickName.nickName
             : createRandomNickName(),
       });
-      setIsSignUp(false);
-      setIsEmailAuth(true);
+      navigate('/auth/email-auth');
     },
     onError: (error) => {
       setEmail((prev) => {
