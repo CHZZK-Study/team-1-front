@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import SignUp from '../components/SignUp/SignUp';
+import { Outlet } from 'react-router-dom';
 
 const AuthContainer = styled.div`
   width: 100vw;
@@ -13,7 +13,7 @@ const AuthContainer = styled.div`
 function Auth() {
   return (
     <AuthContainer>
-      <SignUp />
+      <Outlet />
     </AuthContainer>
   );
 }
