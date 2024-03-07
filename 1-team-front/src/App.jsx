@@ -8,9 +8,9 @@ import {
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Auth from './pages/Auth';
-import SignUp from './components/SignUp/SignUp';
-import EmailAuth from './components/SignUp/EmailAuth';
-import EmailConfirm from './components/SignUp/EmailConfirm';
+import SignUp from './components/Auth/SignUp/SignUp';
+import EmailAuth from './components/Auth/SignUp/EmailAuth';
+import EmailConfirm from './components/Auth/SignUp/EmailConfirm';
 
 const routeDefinitions = createRoutesFromElements(
   <Route>
