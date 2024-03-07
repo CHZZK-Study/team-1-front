@@ -82,4 +82,15 @@ const Button = styled.button`
   ${(props) => buttonType[props.buttonType]}
 `;
 
-export { CardContainer, FormWrapper, InputBox, Button };
+const SpanButton = styled.span`
+  & span {
+    font-size: 0.8rem;
+    color: #00aff4;
+    cursor: pointer;
+  }
+  & span:hover {
+    text-decoration-line: underline;
+  }
+`;
+
+export { CardContainer, FormWrapper, InputBox, Button, SpanButton };

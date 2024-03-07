@@ -5,21 +5,19 @@ import axios from 'axios';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { CardContainer, FormWrapper, InputBox, Button } from '../AuthStyles';
+import {
+  CardContainer,
+  FormWrapper,
+  InputBox,
+  Button,
+  SpanButton,
+} from '../AuthStyles';
 
 const FooterBox = styled.div`
   display: flex;
   gap: 8px;
   & p {
     font-size: 0.8rem;
-  }
-  & span {
-    font-size: 0.8rem;
-    color: #00aff4;
-    cursor: pointer;
-  }
-  & span:hover {
-    text-decoration-line: underline;
   }
 `;
 
@@ -101,7 +99,7 @@ const LogIn = () => {
       </FormWrapper>
       <FooterBox>
         <p>계정이 필요한가요 ?</p>
-        <span>가입하기</span>
+        <SpanButton>가입하기</SpanButton>
       </FooterBox>
     </CardContainer>
   );
