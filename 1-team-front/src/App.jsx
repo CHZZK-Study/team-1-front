@@ -9,8 +9,8 @@ import {
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import Auth from './pages/Auth';
-import LogIn from './components/LogIn/LogIn';
-import FindPassword from './components/FindPassword/FindPassword';
+import LogIn from './components/Auth/LogIn/LogIn';
+import FindPassword from './components/Auth/FindPassword/FindPassword';
 
 const queryClient = new QueryClient();
 
