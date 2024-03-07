@@ -15,7 +15,7 @@ const buttonType = {
   `,
 };
 
-const FormContainer = styled.div`
+const CardContainer = styled.div`
   padding: 40px 30px;
   background-color: #36393f;
   border-radius: 4px;
@@ -23,18 +23,19 @@ const FormContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  & form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 13px;
-  }
   & h2 {
     color: #fff;
   }
   & p {
     font-size: 0.9rem;
   }
+`;
+
+const FormWrapper = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
 `;
 
 const InputBox = styled.div`
@@ -73,4 +74,4 @@ const Button = styled.button`
   ${(props) => buttonType[props.buttonType]}
 `;
 
-export { FormContainer, InputBox, Button };
+export { CardContainer, FormWrapper, InputBox, Button };

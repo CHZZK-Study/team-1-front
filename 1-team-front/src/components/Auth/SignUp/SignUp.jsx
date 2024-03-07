@@ -1,14 +1,13 @@
 /* eslint-disable */
 
 import { useState } from 'react';
-import styled from 'styled-components';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import useAuthStore from '../../../stores/Auth/auth';
 import createRandomNickName from '../../../utils/createRandomNickName';
-import { FormContainer, InputBox, Button } from './AuthStyles';
+import { CardContainer, FormWrapper, InputBox, Button } from './AuthStyles';
 
 function SignUp() {
   const { setAuthForm } = useAuthStore();
@@ -76,9 +75,9 @@ function SignUp() {
   };
 
   return (
-    <FormContainer onSubmit={submitHandler}>
+    <CardContainer onSubmit={submitHandler}>
       <h2>계정 만들기</h2>
-      <form>
+      <FormWrapper>
         <InputBox>
           <label>
             이메일
@@ -167,8 +166,8 @@ function SignUp() {
           )}
         </InputBox>
         <Button buttonType="confirm">계속하기</Button>
-      </form>
-    </FormContainer>
+      </FormWrapper>
+    </CardContainer>
   );
 }
 

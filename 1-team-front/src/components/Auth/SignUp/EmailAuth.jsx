@@ -7,7 +7,7 @@ import useAuthStore from '../../../stores/Auth/auth';
 import { useNavigate } from 'react-router-dom';
 
 import formatTime from '../../../utils/formatTime';
-import { FormContainer, InputBox, Button } from './AuthStyles';
+import { CardContainer, FormWrapper, InputBox, Button } from './AuthStyles';
 
 const NoticeBox = styled.div`
   display: flex;
@@ -106,7 +106,7 @@ const EmailAuth = () => {
   }, [counter]);
 
   return (
-    <FormContainer onSubmit={submitHandler}>
+    <CardContainer onSubmit={submitHandler}>
       <h2>회원가입을 위해 확인 코드를 입력해 주세요.</h2>
       <NoticeBox>
         <p>회원가입시 사용한 이메일로 확인코드를 전송했어요.</p>
@@ -115,7 +115,7 @@ const EmailAuth = () => {
           <span onClick={clickHandler}>코드 재전송</span>
         </p>
       </NoticeBox>
-      <form>
+      <FormWrapper>
         <InputBox>
           <input type="text" onChange={changeHandler}></input>
           {isWrongCode && <p>인증코드가 잘못 됐어요.</p>}
@@ -135,8 +135,8 @@ const EmailAuth = () => {
         >
           {isTyped ? '완료' : '취소'}
         </Button>
-      </form>
-    </FormContainer>
+      </FormWrapper>
+    </CardContainer>
   );
 };
 
