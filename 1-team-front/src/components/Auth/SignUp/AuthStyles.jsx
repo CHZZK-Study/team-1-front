@@ -36,14 +36,6 @@ const FormWrapper = styled.form`
   flex-direction: column;
   align-items: center;
   gap: 13px;
-  & span {
-    font-size: 0.8rem;
-    color: #00aff4;
-    cursor: pointer;
-  }
-  & span:hover {
-    text-decoration-line: underline;
-  }
 `;
 
 const InputBox = styled.div`
@@ -82,4 +74,13 @@ const Button = styled.button`
   ${(props) => buttonType[props.buttonType]}
 `;
 
-export { CardContainer, FormWrapper, InputBox, Button };
+const SpanButton = styled.span`
+  font-size: 0.8rem;
+  color: #00aff4;
+  cursor: pointer;
+  &:hover {
+    text-decoration-line: underline;
+  }
+`;
+
+export { CardContainer, FormWrapper, InputBox, Button, SpanButton };

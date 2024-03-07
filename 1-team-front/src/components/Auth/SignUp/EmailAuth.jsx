@@ -7,47 +7,26 @@ import useAuthStore from '../../../stores/Auth/auth';
 import { useNavigate } from 'react-router-dom';
 
 import formatTime from '../../../utils/formatTime';
-import { CardContainer, FormWrapper, InputBox, Button } from './AuthStyles';
+import {
+  CardContainer,
+  FormWrapper,
+  InputBox,
+  Button,
+  SpanButton,
+} from './AuthStyles';
 
 const NoticeBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   & span {
-    color: #00aff4;
-    font-weight: 600;
-    cursor: pointer;
     margin-left: 5px;
-  }
-  & span:hover {
-    text-decoration: underline;
   }
 `;
 
 const TimerBox = styled.div`
   display: flex;
   margin: -5px 0;
-  ${(props) =>
-    props.isTimeOver
-      ? css`
-          & span {
-            color: #00aff4;
-            font-weight: 600;
-            cursor: pointer;
-          }
-          & span:hover {
-            text-decoration: underline;
-          }
-        `
-      : css`
-          & span {
-            color: #fff;
-            cursor: text;
-          }
-          & span:hover {
-            text-decoration: none;
-          }
-        `}
 `;
 
 const EmailAuth = () => {
@@ -120,7 +99,7 @@ const EmailAuth = () => {
         <p>회원가입시 사용한 이메일로 확인코드를 전송했어요.</p>
         <p>
           코드를 받지 못하셨나요?
-          <span onClick={clickHandler}>코드 재전송</span>
+          <SpanButton onClick={clickHandler}>코드 재전송</SpanButton>
         </p>
       </NoticeBox>
       <FormWrapper>
@@ -128,14 +107,12 @@ const EmailAuth = () => {
           <input type="text" onChange={changeHandler}></input>
           {isWrongCode && <p>인증코드가 잘못 됐어요.</p>}
         </InputBox>
-        <TimerBox isTimeOver={isTimeOver}>
-          <span>
-            {isTimeOver ? (
-              <span onClick={clickHandler}>다시 전송하기</span>
-            ) : (
-              <span>{formatTime(counter)}</span>
-            )}
-          </span>
+        <TimerBox>
+          {isTimeOver ? (
+            <SpanButton onClick={clickHandler}>다시 전송하기</SpanButton>
+          ) : (
+            <span>{formatTime(counter)}</span>
+          )}
         </TimerBox>
         <Button
           onClick={isTyped ? null : clickButtonHandler}
