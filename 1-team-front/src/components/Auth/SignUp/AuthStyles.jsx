@@ -67,7 +67,7 @@ const InputBox = styled.div`
   }
   & p {
     font-size: 0.8rem;
-    color: ${(props) => (props.isSubmit ? '#00aff4' : '#ed4245')};
+    color: ${(props) => (props.isBlue ? '#00aff4' : '#ed4245')};
   }
 `;
 

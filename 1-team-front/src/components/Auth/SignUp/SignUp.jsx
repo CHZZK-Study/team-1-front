@@ -145,7 +145,7 @@ function SignUp() {
           ></input>
           {passwordConfirm.isWarn && <p>비밀번호가 일치하지 않습니다.</p>}
         </InputBox>
-        <InputBox>
+        <InputBox isBlue={true}>
           <label>별명</label>
           <input
             id="nickName"
@@ -159,11 +159,7 @@ function SignUp() {
               )
             }
           ></input>
-          {nickName.isWarn && (
-            <p style={{ color: '#00AFF4' }}>
-              입력하지 않을경우 랜덤 별명이 발급 됩니다.
-            </p>
-          )}
+          {nickName.isWarn && <p>입력하지 않을경우 랜덤 별명이 발급 됩니다.</p>}
         </InputBox>
         <Button buttonType="confirm">계속하기</Button>
       </FormWrapper>
