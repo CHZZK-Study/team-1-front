@@ -39,7 +39,15 @@ const TimerBox = styled.div`
             text-decoration: underline;
           }
         `
-      : null}
+      : css`
+          & span {
+            color: #fff;
+            cursor: text;
+          }
+          & span:hover {
+            text-decoration: none;
+          }
+        `}
 `;
 
 const EmailAuth = () => {
