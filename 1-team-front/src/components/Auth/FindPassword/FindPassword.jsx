@@ -41,7 +41,7 @@ const FindPassword = () => {
       <h2>비밀번호를 잊으셨나요 ?</h2>
       <p>입력하신 이메일로 비밀번호 재설정 링크를 보내드립니다.</p>
       <FormWrapper>
-        <InputBox isSubmit={isSubmit}>
+        <InputBox isBlue={isSubmit}>
           <label>이메일</label>
           <input
             type="text"

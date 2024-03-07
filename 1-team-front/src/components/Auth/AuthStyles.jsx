@@ -36,14 +36,6 @@ const FormWrapper = styled.form`
   flex-direction: column;
   align-items: center;
   gap: 13px;
-  & span {
-    font-size: 0.8rem;
-    color: #00aff4;
-    cursor: pointer;
-  }
-  & span:hover {
-    text-decoration-line: underline;
-  }
 `;
 
 const InputBox = styled.div`
@@ -67,7 +59,7 @@ const InputBox = styled.div`
   }
   & p {
     font-size: 0.8rem;
-    color: ${(props) => (props.isSubmit ? '#00aff4' : '#ed4245')};
+    color: ${(props) => (props.isBlue ? '#00aff4' : '#ed4245')};
   }
 `;
 
@@ -83,12 +75,10 @@ const Button = styled.button`
 `;
 
 const SpanButton = styled.span`
-  & span {
-    font-size: 0.8rem;
-    color: #00aff4;
-    cursor: pointer;
-  }
-  & span:hover {
+  font-size: 0.8rem;
+  color: #00aff4;
+  cursor: pointer;
+  &:hover {
     text-decoration-line: underline;
   }
 `;

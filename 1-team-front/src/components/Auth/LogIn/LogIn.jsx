@@ -16,9 +16,6 @@ import {
 const FooterBox = styled.div`
   display: flex;
   gap: 8px;
-  & p {
-    font-size: 0.8rem;
-  }
 `;
 
 const LogIn = () => {
@@ -91,9 +88,9 @@ const LogIn = () => {
             }
           ></input>
           {isError && <p>이메일 또는 비밀번호가 일치하지 않습니다.</p>}
-          <span onClick={findPasswordClickHandler}>
+          <SpanButton onClick={findPasswordClickHandler}>
             비밀번호를 잊으셨나요 ?
-          </span>
+          </SpanButton>
         </InputBox>
         <Button buttonType="confirm">로그인</Button>
       </FormWrapper>
