@@ -103,6 +103,10 @@ const LogIn = () => {
     submitLogin.mutate({ email: email, password: password });
   };
 
+  const findPasswordClickHandler = () => {
+    navigate('/auth/find-password');
+  };
+
   return (
     <LogInForm onSubmit={loginSubmitHander}>
       <h2>환영합니다 !</h2>
@@ -132,7 +136,7 @@ const LogIn = () => {
           }
         ></input>
         {isError && <p>이메일 또는 비밀번호가 일치하지 않습니다.</p>}
-        <span>비밀번호를 잊으셨나요 ?</span>
+        <span onClick={findPasswordClickHandler}>비밀번호를 잊으셨나요 ?</span>
       </InputBox>
       <LogInButton type="submit">로그인</LogInButton>
       <FooterBox>
