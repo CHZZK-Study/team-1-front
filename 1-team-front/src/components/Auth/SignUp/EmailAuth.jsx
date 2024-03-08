@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import axios from 'axios';
 import useAuthStore from '../../../stores/Auth/auth';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import {
   Button,
   SpanButton,
 } from './AuthStyles';
+import useAuthMutation from '../../../hooks/Auth/useAuthMutation';
 
 const NoticeBox = styled.div`
   display: flex;
@@ -39,26 +40,12 @@ const EmailAuth = () => {
   const [isTimeOver, setIsTimeOver] = useState(false);
   const [isWrongCode, setIsWrongCode] = useState(false);
 
-  const fetchEmailAuth = async (data) => {
-    const url = 'http://localhost:8080/signup/email-check';
-    const payload = data;
-    await axios.post(url, payload);
-  };
-  const fetchCheckAuthCode = async (data) => {
-    const url = 'http://localhost:8080/signup/email-auth-code';
-    const payload = data;
-    await axios.post(url, payload);
-  };
-
-  const emailPost = useMutation(fetchEmailAuth);
-  const authCodePost = useMutation(fetchCheckAuthCode, {
-    onError: (error) => {
-      setIsWrongCode(true);
-    },
-    onSuccess: () => {
-      navigate('/auth/email-certified');
-    },
-  });
+  const fetchEmailAuth = useAuthMutation(
+    'http://localhost:8080/signup/email-auth',
+  );
+  const fetchCheckAuthCode = useAuthMutation(
+    'http://localhost:8080/signup/email-auth-code',
+  );
 
   const changeHandler = (event) => {
     if (event.target.value.length > 0) return setIsTyped(true);
@@ -66,21 +53,40 @@ const EmailAuth = () => {
     setCode(event.target.value);
   };
 
-  const clickHandler = () => {
-    emailPost.mutate({ email: authForm.email });
-    setIsTimeOver(false);
-    setIsWrongCode(false);
-    setCounter(180);
+  const retryClickHandler = () => {
+    fetchEmailAuth.mutate(
+      { email: authForm.email },
+      {
+        onSuccess: () => {
+          setIsTimeOver(false);
+          setIsWrongCode(false);
+          setCounter(180);
+        },
+        onError: () => {
+          // 서버에러 처리
+        },
+      },
+    );
   };
 
-  const clickButtonHandler = (event) => {
+  const clickCancelHandler = (event) => {
     event.preventDefault();
     navigate('/auth/signup');
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    authCodePost.mutate({ email: authForm.email, authentication_code: code });
+    fetchCheckAuthCode.mutate(
+      { email: authForm.email, authentication_code: code },
+      {
+        onSuccess: () => {
+          navigate('/auth/email-certified');
+        },
+        onError: () => {
+          setIsWrongCode(true);
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -99,7 +105,7 @@ const EmailAuth = () => {
         <p>회원가입시 사용한 이메일로 확인코드를 전송했어요.</p>
         <p>
           코드를 받지 못하셨나요?
-          <SpanButton onClick={clickHandler}>코드 재전송</SpanButton>
+          <SpanButton onClick={retryClickHandler}>코드 재전송</SpanButton>
         </p>
       </NoticeBox>
       <FormWrapper>
@@ -109,13 +115,13 @@ const EmailAuth = () => {
         </InputBox>
         <TimerBox>
           {isTimeOver ? (
-            <SpanButton onClick={clickHandler}>다시 전송하기</SpanButton>
+            <SpanButton onClick={retryClickHandler}>다시 전송하기</SpanButton>
           ) : (
             <span>{formatTime(counter)}</span>
           )}
         </TimerBox>
         <Button
-          onClick={isTyped ? null : clickButtonHandler}
+          onClick={isTyped ? null : clickCancelHandler}
           buttonType={isTyped ? 'confirm' : 'cancel'}
         >
           {isTyped ? '완료' : '취소'}

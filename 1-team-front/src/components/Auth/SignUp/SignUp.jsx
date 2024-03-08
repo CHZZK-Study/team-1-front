@@ -55,6 +55,7 @@ function SignUp() {
                 : createRandomNickName(),
           });
           fetchEmailAuth.mutate({ email: email });
+          navigate('/auth/email-auth');
         },
         onError: () => {
           setEmail((prev) => {
