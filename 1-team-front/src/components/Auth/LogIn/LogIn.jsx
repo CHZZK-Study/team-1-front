@@ -1,8 +1,6 @@
 /* eslint-disable */
 import { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -12,6 +10,7 @@ import {
   Button,
   SpanButton,
 } from '../AuthStyles';
+import useAuthMutation from '../../../hooks/Auth/useAuthMutation';
 
 const FooterBox = styled.div`
   display: flex;
@@ -24,24 +23,7 @@ const LogIn = () => {
   const [password, setPassword] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const fetchLogin = async (data) => {
-    const url = 'http://localhost:8080/login';
-    const payload = data;
-    return await axios.post(url, payload);
-  };
-
-  const submitLogin = useMutation(fetchLogin, {
-    onSuccess: (res) => {
-      setIsError(false);
-      localStorage.clear();
-      localStorage.setItem('email', res.data.email);
-      localStorage.setItem('token', res.data.token);
-      navigate('/');
-    },
-    onError: () => {
-      setIsError(true);
-    },
-  });
+  const fetchLogin = useAuthMutation('http://localhost:8080/login');
 
   const chageInputHandler = (value, setFn) => {
     setFn(value);
@@ -49,7 +31,21 @@ const LogIn = () => {
 
   const loginSubmitHander = (event) => {
     event.preventDefault();
-    submitLogin.mutate({ email: email, password: password });
+    fetchLogin.mutate(
+      { email: email, password: password },
+      {
+        onSuccess: (res) => {
+          setIsError(false);
+          localStorage.clear();
+          localStorage.setItem('email', res.data.email);
+          localStorage.setItem('token', res.data.token);
+          navigate('/');
+        },
+        onError: () => {
+          setIsError(true);
+        },
+      },
+    );
   };
 
   const findPasswordClickHandler = () => {
