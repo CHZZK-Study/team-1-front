@@ -9,6 +9,18 @@ import useAuthStore from '../../../stores/Auth/auth';
 import createRandomNickName from '../../../utils/createRandomNickName';
 import { CardContainer, FormWrapper, InputBox, Button } from './AuthStyles';
 
+const validateEmail = (value) => value.includes('@');
+const validatePassword = (value) => {
+  const check = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
+  return check.test(value);
+};
+const validatePasswordConfirm = (confirmPassword, curentPassword) => {
+  return confirmPassword === curentPassword;
+};
+const validateNickName = (value) => {
+  return value.length !== 0;
+};
+
 function SignUp() {
   const { setAuthForm } = useAuthStore();
   const navigate = useNavigate();
@@ -48,26 +60,14 @@ function SignUp() {
     },
   });
 
-  const validateEmail = (value) => value.includes('@');
-  const validatePassword = (value) => {
-    const check =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
-    return check.test(value);
-  };
-  const validatePasswordConfirm = (value) => {
-    return value === password.password;
-  };
-  const validateNickName = (value) => {
-    return value.length !== 0;
-  };
-
   const submitHandler = (event) => {
     event.preventDefault();
     mutate({ email: email.email });
   };
 
-  const blurHandler = (id, value, setFn, validationFn) => {
-    if (validationFn(value)) return setFn({ [id]: value, isWarn: false });
+  const blurHandler = (id, value, setFn, validationFn, extraValue = null) => {
+    if (validationFn(value, extraValue))
+      return setFn({ [id]: value, isWarn: false });
     if (id === 'email') setIsEmailDuplicated(false);
     setFn((prev) => {
       return { ...prev, isWarn: true };
@@ -140,6 +140,7 @@ function SignUp() {
                 event.target.value,
                 setPasswordConfirm,
                 validatePasswordConfirm,
+                password.password,
               )
             }
           ></input>
