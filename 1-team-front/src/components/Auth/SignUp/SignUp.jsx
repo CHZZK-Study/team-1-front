@@ -1,12 +1,11 @@
 /* eslint-disable */
 
 import { useState } from 'react';
-import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 import useAuthStore from '../../../stores/Auth/auth';
 import createRandomNickName from '../../../utils/createRandomNickName';
+import useAuthMutation from '../../../hooks/Auth/useAuthMutation';
 import { CardContainer, FormWrapper, InputBox, Button } from './AuthStyles';
 
 const validateEmail = (value) => value.includes('@');
@@ -34,35 +33,37 @@ function SignUp() {
   const [nickName, setNickName] = useState({ nickName: '', isWarn: false });
   const [isEmailDuplicated, setIsEmailDuplicated] = useState(false);
 
-  const fetchEmailAuth = async (data) => {
-    const url = 'http://localhost:8080/signup/email-check';
-    const payload = data;
-    return await axios.post(url, payload);
-  };
-
-  const { mutate } = useMutation(fetchEmailAuth, {
-    onSuccess: () => {
-      setAuthForm({
-        email: email.email,
-        password: password.password,
-        nickName:
-          nickName.nickName.length > 0
-            ? nickName.nickName
-            : createRandomNickName(),
-      });
-      navigate('/auth/email-auth');
-    },
-    onError: () => {
-      setEmail((prev) => {
-        return { ...prev, isWarn: true };
-      });
-      setIsEmailDuplicated(true);
-    },
-  });
+  const fetchValidateEmail = useAuthMutation(
+    'http://localhost:8080/signup/email-validation',
+  );
+  const fetchEmailAuth = useAuthMutation(
+    'http://localhost:8080/signup/email-auth',
+  );
 
   const submitHandler = (event) => {
     event.preventDefault();
-    mutate({ email: email.email });
+    fetchValidateEmail.mutate(
+      { email: email },
+      {
+        onSuccess: () => {
+          setAuthForm({
+            email: email.email,
+            password: password.password,
+            nickName:
+              nickName.nickName.length > 0
+                ? nickName.nickName
+                : createRandomNickName(),
+          });
+          fetchEmailAuth.mutate({ email: email });
+        },
+        onError: () => {
+          setEmail((prev) => {
+            return { ...prev, isWarn: true };
+          });
+          setIsEmailDuplicated(true);
+        },
+      },
+    );
   };
 
   const blurHandler = (id, value, setFn, validationFn, extraValue = null) => {
@@ -98,7 +99,7 @@ function SignUp() {
           {email.isWarn && (
             <p>
               {isEmailDuplicated
-                ? '이미 가입된 이메일 입니다.'
+                ? '이미 존재하거나 유효하지 않는 이메일 입니다.'
                 : '이메일을 입력해 주세요.'}
             </p>
           )}
