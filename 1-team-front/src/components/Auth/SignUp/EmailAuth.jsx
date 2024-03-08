@@ -46,6 +46,7 @@ const EmailAuth = () => {
   const fetchCheckAuthCode = useAuthMutation(
     'http://localhost:8080/signup/email-auth-code',
   );
+  const fetchSignUp = useAuthMutation('http://localhost:8080/signup');
 
   const changeHandler = (event) => {
     if (event.target.value.length > 0) return setIsTyped(true);
@@ -80,6 +81,7 @@ const EmailAuth = () => {
       { email: authForm.email, authentication_code: code },
       {
         onSuccess: () => {
+          fetchSignUp.mutate(authForm); // 성공 실패 처리 해야함
           navigate('/auth/email-certified');
         },
         onError: () => {
