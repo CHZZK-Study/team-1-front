@@ -11,6 +11,7 @@ import {
   SpanButton,
 } from '../AuthStyles';
 import useAuthMutation from '../../../hooks/Auth/useAuthMutation';
+import useBlurHandler from '../../../hooks/Auth/useBlurHandler';
 
 const FooterBox = styled.div`
   display: flex;
@@ -19,15 +20,11 @@ const FooterBox = styled.div`
 
 const LogIn = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useBlurHandler('');
+  const [password, setPassword] = useBlurHandler('');
   const [isError, setIsError] = useState(false);
 
   const fetchLogin = useAuthMutation('http://localhost:8080/login');
-
-  const chageInputHandler = (value, setFn) => {
-    setFn(value);
-  };
 
   const loginSubmitHander = (event) => {
     event.preventDefault();
@@ -64,10 +61,7 @@ const LogIn = () => {
           <input
             id="email"
             type="text"
-            value={email}
-            onChange={(event) =>
-              chageInputHandler(event.target.value, setEmail)
-            }
+            onBlur={(event) => setEmail(event)}
           ></input>
         </InputBox>
         <InputBox>
@@ -78,10 +72,7 @@ const LogIn = () => {
           <input
             id="password"
             type="password"
-            value={password}
-            onChange={(event) =>
-              chageInputHandler(event.target.value, setPassword)
-            }
+            onBlur={(event) => setPassword(event)}
           ></input>
           {isError && <p>이메일 또는 비밀번호가 일치하지 않습니다.</p>}
           <SpanButton onClick={findPasswordClickHandler}>
