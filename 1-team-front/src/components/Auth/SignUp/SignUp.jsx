@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import useAuthStore from '../../../stores/Auth/auth';
-import createRandomNickName from '../../../utils/createRandomNickName';
 import useAuthMutation from '../../../hooks/Auth/useAuthMutation';
 import { CardContainer, FormWrapper, InputBox, Button } from './AuthStyles';
 
@@ -21,7 +19,6 @@ const validateNickName = (value) => {
 };
 
 function SignUp() {
-  const { setAuthForm } = useAuthStore();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState({ email: '', isWarn: false });
@@ -31,31 +28,21 @@ function SignUp() {
     isWarn: false,
   });
   const [nickName, setNickName] = useState({ nickName: '', isWarn: false });
-  const [isEmailDuplicated, setIsEmailDuplicated] = useState(false);
 
-  const fetchValidateEmail = useAuthMutation(
-    'http://localhost:8080/signup/email-validation',
-  );
+  const fetchSignUp = useAuthMutation('http://localhost:8080/signup');
+
   const fetchEmailAuth = useAuthMutation(
     'http://localhost:8080/signup/email-auth',
   );
 
-  const submitHandler = (event) => {
+  const signUpHandler = (event) => {
     event.preventDefault();
-    fetchValidateEmail.mutate(
-      { email: email },
+    fetchSignUp.mutate(
+      { email, password, nickName },
       {
         onSuccess: () => {
-          setAuthForm({
-            email: email.email,
-            password: password.password,
-            nickName:
-              nickName.nickName.length > 0
-                ? nickName.nickName
-                : createRandomNickName(),
-          });
-          fetchEmailAuth.mutate({ email: email });
-          navigate('/auth/email-auth');
+          fetchEmailAuth.mutate({ email });
+          navigate('/auth/email-auth', { email: email.email });
         },
         onError: () => {
           setEmail((prev) => {
@@ -70,16 +57,15 @@ function SignUp() {
   const blurHandler = (id, value, setFn, validationFn, extraValue = null) => {
     if (validationFn(value, extraValue))
       return setFn({ [id]: value, isWarn: false });
-    if (id === 'email') setIsEmailDuplicated(false);
     setFn((prev) => {
       return { ...prev, isWarn: true };
     });
   };
 
   return (
-    <CardContainer onSubmit={submitHandler}>
+    <CardContainer onSubmit={signUpHandler}>
       <h2>계정 만들기</h2>
-      <FormWrapper>
+      <FormWrapper onSubmit={submitHander}>
         <InputBox>
           <label>
             이메일
@@ -97,13 +83,7 @@ function SignUp() {
               )
             }
           />
-          {email.isWarn && (
-            <p>
-              {isEmailDuplicated
-                ? '이미 존재하거나 유효하지 않는 이메일 입니다.'
-                : '이메일을 입력해 주세요.'}
-            </p>
-          )}
+          {email.isWarn && <p>이미 존재하거나 유효하지 않는 이메일 입니다.</p>}
         </InputBox>
         <InputBox>
           <label>

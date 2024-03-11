@@ -1,10 +1,7 @@
 /* eslint-disable */
 import { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
 import styled from 'styled-components';
-import axios from 'axios';
-import useAuthStore from '../../../stores/Auth/auth';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import formatTime from '../../../utils/formatTime';
 import {
@@ -31,8 +28,8 @@ const TimerBox = styled.div`
 `;
 
 const EmailAuth = () => {
-  const { authForm } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [code, setCode] = useState('');
   const [isTyped, setIsTyped] = useState(false);
@@ -46,7 +43,6 @@ const EmailAuth = () => {
   const fetchCheckAuthCode = useAuthMutation(
     'http://localhost:8080/signup/email-auth-code',
   );
-  const fetchSignUp = useAuthMutation('http://localhost:8080/signup');
 
   const changeHandler = (event) => {
     if (event.target.value.length > 0) return setIsTyped(true);
@@ -56,7 +52,7 @@ const EmailAuth = () => {
 
   const retryClickHandler = () => {
     fetchEmailAuth.mutate(
-      { email: authForm.email },
+      { email: location.state.email },
       {
         onSuccess: () => {
           setIsTimeOver(false);
@@ -78,10 +74,9 @@ const EmailAuth = () => {
   const submitHandler = (event) => {
     event.preventDefault();
     fetchCheckAuthCode.mutate(
-      { email: authForm.email, authentication_code: code },
+      { email: location.state.email, authentication_code: code },
       {
         onSuccess: () => {
-          fetchSignUp.mutate(authForm); // 성공 실패 처리 해야함
           navigate('/auth/email-certified');
         },
         onError: () => {
