@@ -1,9 +1,37 @@
-import { useState } from 'react'
+/* eslint-disable */
 
-import './App.css'
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+} from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import Auth from './pages/Auth';
+import SignUp from './components/Auth/SignUp/SignUp';
+import EmailAuth from './components/Auth/SignUp/EmailAuth';
+import EmailConfirm from './components/Auth/SignUp/EmailConfirm';
+
+const routeDefinitions = createRoutesFromElements(
+  <Route>
+    <Route path="/auth" element={<Auth></Auth>}>
+      <Route path="signup" element={<SignUp></SignUp>} />
+      <Route path="email-auth" element={<EmailAuth></EmailAuth>} />
+      <Route path="email-certified" element={<EmailConfirm></EmailConfirm>} />
+    </Route>
+  </Route>,
+);
+
+const router = createBrowserRouter(routeDefinitions);
+
+const queryClient = new QueryClient();
 
 function App() {
-  return <h1>hello</h1>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
-export default App
+export default App;
