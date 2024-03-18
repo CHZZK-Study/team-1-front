@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import './App.css'
+import './App.css';
+import Profile from './components/Profile/Profile';
 
 function App() {
-  return <h1>hello</h1>
+  return <Profile />;
 }
 
-export default App
+export default App;
